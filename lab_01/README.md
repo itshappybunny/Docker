@@ -18,4 +18,7 @@
 2. Развертывание виртуальной машины из образа ETL+devops_26.ova
 3. Проверка установки Docker'а
 ![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-10%20145514.png)
+4. Команды Docker CLI:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-10%20151055.png)
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-10%20151243.png)
  
