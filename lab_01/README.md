@@ -17,5 +17,5 @@
 1. Установка VirtualBox
 2. Развертывание виртуальной машины из образа ETL+devops_26.ova
 3. Проверка установки Docker'а
-<img width="1278" height="795" alt="image" src="https://github.com/user-attachments/assets/8d966f29-e4de-4315-8ab5-6c6bb8cd8e50" />
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-10%20145514.png)
  
