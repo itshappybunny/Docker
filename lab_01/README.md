@@ -18,11 +18,15 @@
 2. Развертывание виртуальной машины из образа ETL+devops_26.ova
 3. Проверка установки Docker'а
 ![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-10%20145514.png)
-
-5. Команды Docker CLI:
+---
+4. Команды Docker CLI:
 ![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-10%20151055.png)
 ![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-10%20151243.png)
-
+---
 **Выполнение индивидуального задания**:
 
+Предварительно для выполнения своего варианта задания потребуется запустить также контейнер с Elasticsearch, чтобы при помощи Kibana вытагивать данные из системы Elasticsearch.
+
+Создаем общую сеть для двух контейнеров:
+![]()
  
