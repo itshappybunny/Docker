@@ -25,8 +25,18 @@
 ---
 **Выполнение индивидуального задания**:
 
-Предварительно для выполнения своего варианта задания потребуется запустить также контейнер с Elasticsearch, чтобы при помощи Kibana вытагивать данные из системы Elasticsearch.
+Предварительно для выполнения своего варианта задания потребуется запустить также контейнер с Elasticsearch, чтобы при помощи Kibana вытягивать данные из системы Elasticsearch.
 
-Создаем общую сеть для двух контейнеров:
-![]()
- 
+Создание образа Elasticsearch и запуск соответствующего контейнера:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-24%20103254.png)
+
+Проверка работы контейнера:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-24%20103606.png)
+
+
+Создание образа Kibana и запуск соответствующего контейнера:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-02-24%20105350.png)
+
+Переход в веб-интерфейс Kibana:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-03-09%20232344.png)
+1[](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-03-09%20232422.png)
