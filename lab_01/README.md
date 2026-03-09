@@ -39,4 +39,10 @@
 
 Переход в веб-интерфейс Kibana:
 ![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-03-09%20232344.png)
-1[](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-03-09%20232422.png)
+![](https://github.com/itshappybunny/Docker/blob/main/lab_01/img/Screenshot%202026-03-09%20232422.png)
+
+
+
+Выводы:
+- Изучены основные команды работы с докер образами и контейнерами;
+- В ходе работы были проблемы при входе в веб-интерфейс, тк часто при неправильном создании образов требовался ввод токена для входа на сайт.
