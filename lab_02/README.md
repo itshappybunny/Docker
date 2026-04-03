@@ -58,3 +58,15 @@ COPY app/script.py .
 # Запуск скрипта
 CMD ["python", "script.py"]
 ```
+<br>
+
+## **Структура проекта с необходимыми файлами**
+![](https://github.com/itshappybunny/Docker/blob/main/lab_02/images/Screenshot%202026-04-03%20225058.png)
+
+## **Процесс сборки образа**
+![](https://github.com/itshappybunny/Docker/blob/main/lab_02/images/Screenshot%202026-04-03%20225224.png)
+
+## **Запуск контейнера с результатами работы скрипта и Dockerfil'а**
+![](https://github.com/itshappybunny/Docker/blob/main/lab_02/images/Screenshot%202026-04-03%20225502.png)
+
+**Вывод работы**: В ходе выполнения проекта был освоен полный цикл разработки и контейнеризации аналитического инструмента при помощи языка Python и создания Docker файлов.
