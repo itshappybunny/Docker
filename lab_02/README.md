@@ -29,9 +29,32 @@
 - **Техническая особенность:** Работа в бесконечном цикле (Cron Job имитация) с выводом в stdout.
 <br>
 
-## **Листинг кода**:
+## **Листинг Python кода**:
 ### Ключевой фрагмент аналитики (Pandas):
 ```python
 # Фильтрация и расчет среднего чека
 completed_orders = df[df['status'] == 'Completed']
 aov_by_cat = completed_orders.groupby('category')['amount'].mean().round(2).to_dict()
+```
+
+## **Листинг Dockerfile**:
+```dockerfile
+# Используем легковесный образ Python
+FROM python:3.9-slim
+
+# Устанавливаем переменную, чтобы логи Python сразу отображались в терминале
+ENV PYTHONUNBUFFERED=1
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем зависимости и устанавливаем их
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем код приложения
+COPY app/script.py .
+
+# Запуск скрипта
+CMD ["python", "script.py"]
+```
