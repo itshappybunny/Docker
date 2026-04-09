@@ -1,42 +1,15 @@
-kubectl delete -f k8s/
-
-# Новый пароль: admin123 (8 символов)
-echo -n "admin123" | base64
-
-nano k8s/01-config-secret-pvc-sa.yaml
+nano k8s/03-console-service.yaml
 
 apiVersion: v1
-kind: Secret
+kind: Service
 metadata:
-  name: minio-secret
-type: Opaque
-data:
-  MINIO_ROOT_USER: YWRtaW4=      # admin
-  MINIO_ROOT_PASSWORD: YWRtaW4xMjM=  # admin123
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: minio-config
-data:
-  MINIO_DEFAULT_BUCKET: "analytics"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: minio-pvc
+  name: minio-console-service
 spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: minio-job-sa
-
-kubectl apply -f k8s/
-
-kubectl get pods -w
+  type: NodePort
+  selector:
+    app: minio
+  ports:
+  - name: console
+    port: 9001
+    targetPort: 9001
+    nodePort: 30901
