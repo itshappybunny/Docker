@@ -10,6 +10,12 @@ kubectl apply -f k8s/
 
 # 4. Проверьте состояние
 kubectl get pods
+
+NAME                                 READY   STATUS             RESTARTS      AGE
+console-deployment-65fd888c9-m4v4b   0/1     ImagePullBackOff   0             2m5s
+minio-client-job-z2227               0/1     Completed          0             2m5s
+minio-deployment-7bfd557859-7d2xk    0/1     CrashLoopBackOff   4 (28s ago)   2m5s
+
 kubectl get jobs
 kubectl get pvc
 kubectl get svc
