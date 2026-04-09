@@ -10,3 +10,23 @@ COPY create-bucket.sh /create-bucket.sh
 RUN chmod +x /create-bucket.sh
 
 CMD ["/create-bucket.sh"]
+
+
+nano loader/create-bucket.sh
+
+#!/bin/sh
+
+echo "Waiting for MinIO to be ready..."
+sleep 10
+
+# Настройка alias для MinIO
+mc alias set myminio http://minio-service:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
+
+# Создание бакета "analytics"
+mc mb myminio/analytics --ignore-existing
+
+echo "Bucket 'analytics' created successfully!"
+
+# (Опционально) Вывести список бакетов для проверки
+mc ls myminio
+
