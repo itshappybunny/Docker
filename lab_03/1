@@ -1,197 +1,42 @@
-# 1. Переключитесь в окружение minikube (только если используете minikube)
-eval $(minikube docker-env)
+kubectl delete -f k8s/
 
-# 2. Соберите образ для Job
-cd ~/lab_03_minio
-docker build -t minio-client-job:v1 ./loader
+# Новый пароль: admin123 (8 символов)
+echo -n "admin123" | base64
 
-# 3. Примените все манифесты
-kubectl apply -f k8s/
+nano k8s/01-config-secret-pvc-sa.yaml
 
-# 4. Проверьте состояние
-kubectl get pods
-
-NAME                                 READY   STATUS             RESTARTS      AGE
-console-deployment-65fd888c9-m4v4b   0/1     ImagePullBackOff   0             2m5s
-minio-client-job-z2227               0/1     Completed          0             2m5s
-minio-deployment-7bfd557859-7d2xk    0/1     CrashLoopBackOff   4 (28s ago)   2m5s
-
-
-
-# Посмотрим логи MinIO, чтобы понять причину падения
-kubectl logs deployment/minio-deployment
-
-# Посмотрим детали события
-kubectl describe pod -l app=minio
-
-kubectl logs deployment/minio-deployment
-FATAL Unable to validate credentials inherited from the shell environment: Invalid credentials
-      > Please provide correct credentials
-      HINT:
-        MINIO_ROOT_USER length should be at least 3, and MINIO_ROOT_PASSWORD length at least 8 characters
-dev@dev-vm:~/Downloads/labs_cicd/2026/pks_project03$ kubectl describe pod -l app=minio
-Name:             minio-deployment-7bfd557859-7d2xk
-Namespace:        default
-Priority:         0
-Service Account:  default
-Node:             minikube/192.168.49.2
-Start Time:       Fri, 10 Apr 2026 02:04:30 +0300
-Labels:           app=minio
-                  pod-template-hash=7bfd557859
-Annotations:      <none>
-Status:           Running
-IP:               10.244.0.3
-IPs:
-  IP:           10.244.0.3
-Controlled By:  ReplicaSet/minio-deployment-7bfd557859
-Containers:
-  minio:
-    Container ID:  docker://2cf4a75bda4a7064ffa1c32aa105d9da44a4bc27192d07183288d04a798346b4
-    Image:         minio/minio:latest
-    Image ID:      docker-pullable://minio/minio@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e
-    Ports:         9000/TCP, 9001/TCP
-    Host Ports:    0/TCP, 0/TCP
-    Args:
-      server
-      /data
-      --console-address
-      :9001
-    State:          Waiting
-      Reason:       CrashLoopBackOff
-    Last State:     Terminated
-      Reason:       Error
-      Exit Code:    1
-      Started:      Fri, 10 Apr 2026 02:10:15 +0300
-      Finished:     Fri, 10 Apr 2026 02:10:16 +0300
-    Ready:          False
-    Restart Count:  6
-    Liveness:       http-get http://:9000/minio/health/live delay=30s timeout=1s period=10s #success=1 #failure=3
-    Readiness:      http-get http://:9000/minio/health/ready delay=20s timeout=1s period=5s #success=1 #failure=3
-    Environment:
-      MINIO_ROOT_USER:      <set to the key 'MINIO_ROOT_USER' in secret 'minio-secret'>      Optional: false
-      MINIO_ROOT_PASSWORD:  <set to the key 'MINIO_ROOT_PASSWORD' in secret 'minio-secret'>  Optional: false
-    Mounts:
-      /data from minio-storage (rw)
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-dqqhl (ro)
-Conditions:
-  Type                        Status
-  PodReadyToStartContainers   True 
-  Initialized                 True 
-  Ready                       False 
-  ContainersReady             False 
-  PodScheduled                True 
-Volumes:
-  minio-storage:
-    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
-    ClaimName:  minio-pvc
-    ReadOnly:   false
-  kube-api-access-dqqhl:
-    Type:                    Projected (a volume that contains injected data from multiple sources)
-    TokenExpirationSeconds:  3607
-    ConfigMapName:           kube-root-ca.crt
-    Optional:                false
-    DownwardAPI:             true
-QoS Class:                   BestEffort
-Node-Selectors:              <none>
-Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:
-  Type     Reason            Age                    From               Message
-  ----     ------            ----                   ----               -------
-  Normal   Scheduled         7m46s                  default-scheduler  Successfully assigned default/minio-deployment-7bfd557859-7d2xk to minikube
-  Warning  FailedScheduling  7m46s                  default-scheduler  0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
-  Normal   Pulled            7m36s                  kubelet            spec.containers{minio}: Successfully pulled image "minio/minio:latest" in 10.141s (10.141s including waiting). Image size: 175494058 bytes.
-  Normal   Pulled            7m32s                  kubelet            spec.containers{minio}: Successfully pulled image "minio/minio:latest" in 1.084s (1.084s including waiting). Image size: 175494058 bytes.
-  Normal   Pulled            7m19s                  kubelet            spec.containers{minio}: Successfully pulled image "minio/minio:latest" in 1.28s (1.28s including waiting). Image size: 175494058 bytes.
-  Normal   Pulled            6m54s                  kubelet            spec.containers{minio}: Successfully pulled image "minio/minio:latest" in 1.469s (1.469s including waiting). Image size: 175494058 bytes.
-  Normal   Pulled            6m10s                  kubelet            spec.containers{minio}: Successfully pulled image "minio/minio:latest" in 1.116s (2.596s including waiting). Image size: 175494058 bytes.
-  Normal   Created           4m47s (x6 over 7m34s)  kubelet            spec.containers{minio}: Container created
-  Normal   Started           4m47s (x6 over 7m34s)  kubelet            spec.containers{minio}: Container started
-  Normal   Pulled            4m47s                  kubelet            spec.containers{minio}: Successfully pulled image "minio/minio:latest" in 1.427s (1.428s including waiting). Image size: 175494058 bytes.
-  Normal   Pulling           2m2s (x7 over 7m46s)   kubelet            spec.containers{minio}: Pulling image "minio/minio:latest"
-  Normal   Pulled            2m1s                   kubelet            spec.containers{minio}: Successfully pulled image "minio/minio:latest" in 1.29s (1.29s including waiting). Image size: 175494058 bytes.
-  Warning  BackOff           28s (x22 over 7m31s)   kubelet            spec.containers{minio}: Back-off restarting failed container minio in pod minio-deployment-7bfd557859-7d2xk_default(af0f25a7-f0af-4e96-9622-27c569e3612d)
-
-nano k8s/02-minio.yaml
-
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Secret
 metadata:
-  name: minio-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: minio
-  template:
-    metadata:
-      labels:
-        app: minio
-    spec:
-      securityContext:
-        fsGroup: 1000
-        runAsUser: 1000
-        runAsGroup: 1000
-      containers:
-      - name: minio
-        image: minio/minio:latest
-        args: ["server", "/data", "--console-address", ":9001"]
-        env:
-        - name: MINIO_ROOT_USER
-          valueFrom:
-            secretKeyRef:
-              name: minio-secret
-              key: MINIO_ROOT_USER
-        - name: MINIO_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: minio-secret
-              key: MINIO_ROOT_PASSWORD
-        ports:
-        - containerPort: 9000
-          name: api
-        - containerPort: 9001
-          name: console
-        volumeMounts:
-        - name: minio-storage
-          mountPath: /data
-        livenessProbe:
-          httpGet:
-            path: /minio/health/live
-            port: 9000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /minio/health/ready
-            port: 9000
-          initialDelaySeconds: 20
-          periodSeconds: 5
-      volumes:
-      - name: minio-storage
-        persistentVolumeClaim:
-          claimName: minio-pvc
+  name: minio-secret
+type: Opaque
+data:
+  MINIO_ROOT_USER: YWRtaW4=      # admin
+  MINIO_ROOT_PASSWORD: YWRtaW4xMjM=  # admin123
 ---
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: minio-service
+  name: minio-config
+data:
+  MINIO_DEFAULT_BUCKET: "analytics"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
 spec:
-  type: ClusterIP
-  selector:
-    app: minio
-  ports:
-  - name: api
-    port: 9000
-    targetPort: 9000
-  - name: console
-    port: 9001
-    targetPort: 9001
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: minio-job-sa
 
+kubectl apply -f k8s/
 
-
-    
-
-kubectl get jobs
-kubectl get pvc
-kubectl get svc
+kubectl get pods -w
