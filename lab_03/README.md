@@ -29,6 +29,34 @@
 ---
 
 ## 3. Архитектура решения
+```mermaid
+flowchart LR
+    subgraph K8S["K8s Cluster (MicroK8s)"]
+        
+        subgraph Config["Слой конфигурации"]
+            Secret["Secret"]
+            PVC["PVC"]
+            SA["ServiceAccount"]
+        end
 
+        subgraph Data["Слой данных"]
+            MinIO["MinIO Pod<br/>Port: 9000, 9001"]
+        end
+
+        subgraph Load["Слой загрузки"]
+            Job["MinIO Client Job<br"]
+        end
+
+        subgraph Access["Слой доступа"]
+            Service["NodePort Service<br/>30900 / 30901"]
+        end
+
+    end
+
+    Analyst["Аналитик"] --> Access
+    Load --> Data
+    Config --> Data
+    Data --> Access
+```
 <br>
 
