@@ -94,5 +94,118 @@ graph TD
 
 ---
 
+## 4. Манифесты Kubernetes
+`k8s/01-secret.yaml`
+
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-secret
+type: Opaque
+data:
+  MINIO_ROOT_USER: bWluaW8=        # minio
+  MINIO_ROOT_PASSWORD: bWluaW8xMjM= # minio123
+```
+
+`k8s/02-minio-deployment.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio:latest
+        args:
+          - server
+          - /data
+          - "--console-address"
+          - ":9001"
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_USER
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_PASSWORD
+```
+
+`k8s/03-minio-service.yaml`
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+spec:
+  type: NodePort
+  selector:
+    app: minio
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+      nodePort: 30090
+    - name: console
+      port: 9001
+      targetPort: 9001
+      nodePort: 30091
+```
+
+`k8s/04-job.yaml`
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: mc
+        image: minio/mc
+        command: ["/bin/sh", "-c"]
+        args:
+          - >
+            sleep 10;
+            mc alias set myminio http://minio-service:9000 minio minio123;
+            mc mb myminio/mybucket;
+            mc ls myminio;
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_USER
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_PASSWORD
+      restartPolicy: Never
+```
+---
+
 ## 6. Порядок выполнения работы
 **Запуск**: ```minikube start --driver=docker```
