@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: recipe-config
+  namespace: recipe-base
+data:
+  DB_NAME: "recipe_db"
+  DB_USER: "recipe_user"
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  BACKEND_HOST: "backend-service"
+  BACKEND_PORT: "8000"

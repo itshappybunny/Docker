@@ -1,0 +1,120 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: recipe-base-ingress
+  namespace: recipe-base
+  annotations:
+    # NGINX Ingress Controller annotations
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    
+    # For MicroK8s specific
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    
+    # CORS headers
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    
+spec:
+  rules:
+  # Если у вас есть домен (например, recipe-base.local или реальный домен)
+  - host: recipe-base.local  # Измените на ваш домен или IP
+    http:
+      paths:
+      # Frontend routes
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 8501
+      
+      # Backend API routes
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8000
+      
+      # Backend API documentation
+      - path: /docs
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8000
+      
+      - path: /openapi.json
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8000
+      
+      # Health checks
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8000
+  
+  # Альтернативная конфигурация для доступа по IP (если нет домена)
+  # Раскомментируйте если нет домена
+  # - http:
+  #     paths:
+  #     - path: /
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: frontend-service
+  #           port:
+  #             number: 8501
+  #     - path: /api
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: backend-service
+  #           port:
+  #             number: 8000
+
+---
+# Optional: TLS Configuration (если есть сертификаты)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: recipe-base-tls
+  namespace: recipe-base
+type: kubernetes.io/tls
+data:
+  # Замените на реальные сертификаты в base64
+  tls.crt: LS0tLS1CRUdJTiBDRV... (ваш сертификат)
+  tls.key: LS0tLS1CRUdJTiBSU0... (ваш ключ)
+
+---
+# Optional: Для использования с cert-manager (автоматические сертификаты)
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: your-email@example.com  # Замените на ваш email
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
