@@ -207,5 +207,25 @@ spec:
 ```
 ---
 
-## 6. Порядок выполнения работы
-**Запуск**: ```minikube start --driver=docker```
+## 5. Порядок выполнения работы
+- **Запуск**: ```minikube start --driver=docker```
+![](https://github.com/itshappybunny/Docker/blob/main/lab_03/images/Screenshot%202026-04-10%20012753.png)
+
+- **Развертывание**:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_03/images/Screenshot%202026-04-10%20073104.png)
+
+- **Промотр активных компонентов**:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_03/images/Screenshot%202026-04-10%20074020.png)
+
+- **Работающий сервис**:
+![](https://github.com/itshappybunny/Docker/blob/main/lab_03/images/Screenshot%202026-04-10%20074033.png)
+![](https://github.com/itshappybunny/Docker/blob/main/lab_03/images/Screenshot%202026-04-10%20074142.png)
+
+## 6. Результат
+MinIO успешно запущен, доступен через браузер, bucket создан автоматически через Job.
+
+## 7. Вывод
+Kubernetes позволяет:
+- легко развернуть сервисы
+- управлять доступом
+- автоматизировать задачи через Job
